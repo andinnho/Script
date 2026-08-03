@@ -1,0 +1,30 @@
+# Dependências e Builds
+node_modules/
+dist/
+client/dist/
+
+# Dados Pessoais e Configurações Locais
+data_config.json
+data/*.txt
+data/files/
+data/images/
+!data/.gitkeep
+
+# Arquivos de Script e Testes Temporários
+scratch/
+*.log
+*.zip
+*.old.txt
+*.new.txt
+
+# Variáveis de Ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos de Sistema Operacional e IDEs
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
