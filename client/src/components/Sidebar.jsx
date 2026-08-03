@@ -15,7 +15,8 @@ import {
   Download,
   Upload,
   ListOrdered,
-  Folder
+  Folder,
+  RefreshCw
 } from 'lucide-react';
 import CalendarView from './CalendarView';
 import RedNotebookSearch from './RedNotebookSearch';
@@ -38,7 +39,8 @@ export default function Sidebar({
   onRefreshData,
   searchInputRef,
   currentText = '',
-  onNavigateToCategory
+  onNavigateToCategory,
+  onOpenUpdateModal
 }) {
   const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
   const [navState, setNavState] = useState({ categoryName: '', occurrenceIndex: 0 });
@@ -627,6 +629,31 @@ export default function Sidebar({
                     <input type="file" accept=".zip" onChange={handleRestoreBackup} style={{ display: 'none' }} disabled={restoring} />
                   </label>
                 </div>
+              </div>
+
+              {/* Item 3: Atualizações do Sistema */}
+              <div style={{
+                padding: '12px',
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-md)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)' }}>
+                  <RefreshCw size={14} />
+                  <span>Ajuda & Atualizações</span>
+                </div>
+
+                <button 
+                  className="tool-btn" 
+                  onClick={onOpenUpdateModal} 
+                  style={{ border: '1px solid var(--border-color)', justifyContent: 'center', fontSize: '11px' }}
+                >
+                  <RefreshCw size={13} />
+                  <span>Verificar Atualizações</span>
+                </button>
               </div>
             </div>
           )}

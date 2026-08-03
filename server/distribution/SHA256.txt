@@ -1,0 +1,15 @@
+================================================================================
+SCRIPT (OPENJOURNAL) - VALIDAÇÃO DE INTEGRIDADE SHA-256
+Data de Publicação: 2026-08-03 | Versão: v1.0.0
+================================================================================
+
+1. INSTALADOR WINDOWS (NSIS)
+   Arquivo: Script Setup 1.0.0.exe
+   Tamanho: 292.87 MB (307092904 bytes)
+   SHA-256: 0b485a49f72431b7b065f7f4c8009e9f993e0f13e830f4d8f8d8825a7d697123
+
+2. VERSÃO PORTÁTIL WINDOWS
+   Arquivo: Script 1.0.0.exe
+   Tamanho: 97.59 MB (102333911 bytes)
+   SHA-256: 48657f7463f4d4d935fe924e72cc0820ddf3e89e186ff94f8fc5720cef51fde9
+================================================================================

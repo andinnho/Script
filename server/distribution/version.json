@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "releaseDate": "2026-08-03",
+  "installerFilename": "Script Setup 1.0.0.exe",
+  "portableFilename": "Script 1.0.0.exe",
+  "installerSize": "292.87 MB",
+  "portableSize": "97.59 MB",
+  "installerSha256": "0b485a49f72431b7b065f7f4c8009e9f993e0f13e830f4d8f8d8825a7d697123",
+  "portableSha256": "48657f7463f4d4d935fe924e72cc0820ddf3e89e186ff94f8fc5720cef51fde9",
+  "installerUrl": "/api/download/installer",
+  "portableUrl": "/api/download/portable",
+  "changelogUrl": "/api/download/changelog",
+  "sha256Url": "/api/download/sha256",
+  "changelog": [
+    "Módulo de distribuição e atualizações automáticas integrado",
+    "Página de Downloads dedicada para a Intranet da empresa",
+    "Validação de integridade via checksum SHA-256",
+    "Preservação total das configurações e diários do usuário",
+    "Versão desktop nativa com Electron e instalador Windows"
+  ]
+}

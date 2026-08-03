@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from './components/Sidebar';
 import Editor from './components/Editor';
 import CategoryMenu, { CATEGORY_ITEMS } from './components/CategoryMenu';
+import UpdateModal from './components/UpdateModal';
 import { API_BASE } from './utils/apiConfig';
-import { Star } from 'lucide-react';
+import { Star, RefreshCw } from 'lucide-react';
 
 export default function App() {
   const [theme, setTheme] = useState(localStorage.getItem('openjournal_theme') || 'dark');
@@ -17,6 +18,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [highlightQuery, setHighlightQuery] = useState('');
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('openjournal_favorites') || '[]'));
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const saveTimeoutRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -215,6 +217,14 @@ export default function App() {
             editorRef.current.navigateToCategory(catName, occurrenceIndex);
           }
         }}
+        onOpenUpdateModal={() => setIsUpdateModalOpen(true)}
+      />
+
+      {/* Modal de Atualização */}
+      <UpdateModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        apiBase={API_BASE}
       />
 
       {/* Main Content Workspace */}
@@ -240,6 +250,27 @@ export default function App() {
 
           <div className="navbar-right" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <CategoryMenu onSelectCategory={handleInsertCategory} />
+
+            <button
+              className="icon-btn"
+              onClick={() => setIsUpdateModalOpen(true)}
+              title="Verificar atualizações do aplicativo"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 10px',
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+                fontSize: '12px',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer'
+              }}
+            >
+              <RefreshCw size={14} color="var(--accent-primary)" />
+              <span className="hide-mobile">Atualizações</span>
+            </button>
 
             <div style={{ fontSize: '13px', color: 'var(--text-muted)', whiteSpace: 'nowrap', fontWeight: 500 }}>
               {(currentText || '').trim().split(/\s+/).filter(Boolean).length} palavras

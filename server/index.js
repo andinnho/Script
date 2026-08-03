@@ -7,6 +7,7 @@ import { RedNotebookStorage } from './storage.js';
 import { searchJournal, getAllTagsWithCounts, replaceInJournal } from './search.js';
 import { createJournalBackupZip, restoreJournalBackupZip } from './backup.js';
 import { detectOneDrivePaths, browseDirectory, createNewFolder } from './onedrive.js';
+import { getVersionManifest, getLatestBinaryPath } from './distributionManager.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -298,9 +299,77 @@ app.post('/api/ai/prompt', (req, res) => {
   }
 });
 
+// 11. Distribution & Auto-Update Endpoints
+app.get('/downloads', (req, res) => {
+  const downloadsPath = path.resolve(__dirname, 'distribution/downloads.html');
+  if (fs.existsSync(downloadsPath)) {
+    return res.sendFile(downloadsPath);
+  }
+  res.status(404).send('Página de downloads não encontrada.');
+});
+
+app.get('/api/check-updates', (req, res) => {
+  try {
+    const manifest = getVersionManifest();
+    res.json(manifest);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/download/installer', (req, res) => {
+  try {
+    const filePath = getLatestBinaryPath('installer');
+    if (!filePath || !fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, error: 'Instalador não encontrado no repositório' });
+    }
+    const manifest = getVersionManifest();
+    res.download(filePath, manifest.installerFilename || path.basename(filePath));
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/download/portable', (req, res) => {
+  try {
+    const filePath = getLatestBinaryPath('portable');
+    if (!filePath || !fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, error: 'Versão portátil não encontrada no repositório' });
+    }
+    const manifest = getVersionManifest();
+    res.download(filePath, manifest.portableFilename || path.basename(filePath));
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/download/changelog', (req, res) => {
+  try {
+    const filePath = path.resolve(__dirname, 'distribution/CHANGELOG.md');
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    }
+    res.status(404).send('CHANGELOG.md não encontrado');
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get('/api/download/sha256', (req, res) => {
+  try {
+    const filePath = path.resolve(__dirname, 'distribution/SHA256.txt');
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    }
+    res.status(404).send('SHA256.txt não encontrado');
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // SPA fallback for production
 app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/data-assets')) {
+  if (req.path.startsWith('/api') || req.path.startsWith('/downloads') || req.path.startsWith('/data-assets')) {
     return next();
   }
   const indexPath = path.join(distPath, 'index.html');

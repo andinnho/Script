@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script - Central de Downloads e Atualizações (Intranet)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --accent: #e11d48;
+      --accent-hover: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(225, 29, 72, 0.1);
+      border: 1px solid rgba(225, 29, 72, 0.3);
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      color: #fda4af;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .version-meta {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .version-tag {
+      background: var(--accent);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .card-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .card-info {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.875rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background-color: #334155;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #475569;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .changelog-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .changelog-list {
+      list-style-type: none;
+    }
+
+    .changelog-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .changelog-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .sha-box {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .quick-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .quick-links a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    .quick-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-badge">
+        <span>Script - OpenJournal</span>
+      </div>
+      <h1>Central de Distribuição e Downloads</h1>
+      <p class="subtitle">Instaladores e pacotes de atualização autorizados para a Intranet corporativa</p>
+      
+      <div class="version-meta">
+        <div>Versão Atual: <span class="version-tag" id="ver-tag">v1.0.0</span></div>
+        <div>Data de Publicação: <strong id="rel-date">2026-08-03</strong></div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Card 1: Instalador NSIS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            💻 Instalador Windows (Recomendado)
+          </div>
+          <div class="card-desc">Instalação completa com atalhos na Área de Trabalho e Menu Iniciar.</div>
+        </div>
+        <div class="card-info">
+          <div><strong>Arquivo:</strong> <span id="inst-filename">Script Setup 1.0.0.exe</span></div>
+          <div><strong>Tamanho:</strong> <span id="inst-size">97.88 MB</span></div>
+          <div><strong>Requisitos:</strong> Windows 10/11 (64-bit)</div>
+        </div>
+        <a href="/api/download/installer" class="btn btn-primary">
+          ⬇️ Baixar Instalador (.exe)
+        </a>
+      </div>
+
+      <!-- Card 2: Versão Portátil -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            📦 Versão Portátil (Stand-Alone)
+          </div>
+          <div class="card-desc">Executável direto sem necessidade de instalação no sistema.</div>
+        </div>
+        <div class="card-info">
+          <div><strong>Arquivo:</strong> <span id="port-filename">Script 1.0.0.exe</span></div>
+          <div><strong>Tamanho:</strong> <span id="port-size">97.59 MB</span></div>
+          <div><strong>Uso:</strong> Execução rápida em pendrives / máquinas restritas</div>
+        </div>
+        <a href="/api/download/portable" class="btn btn-secondary">
+          ⚡ Baixar Versão Portátil (.exe)
+        </a>
+      </div>
+    </div>
+
+    <!-- Novidades da Versao -->
+    <div class="section-title">
+      🚀 Novidades da Versão Atual
+    </div>
+    <div class="changelog-box">
+      <ul class="changelog-list" id="changelog-list">
+        <li>Módulo de distribuição e atualizações automáticas integrado.</li>
+        <li>Página de Downloads dedicada para a Intranet da empresa.</li>
+        <li>Validação de integridade via checksum SHA-256.</li>
+        <li>Preservação total das configurações e diários do usuário em %APPDATA%/OpenJournal.</li>
+        <li>Versão desktop nativa com Electron e instalador Windows sem arquivos .bat.</li>
+      </ul>
+    </div>
+
+    <!-- Integridade SHA-256 -->
+    <div class="section-title">
+      🛡️ Validação de Integridade (Hashes SHA-256)
+    </div>
+    <div class="sha-box" id="sha-box">
+Carregando informações de hash SHA-256...
+    </div>
+
+    <footer>
+      <p>Script - OpenJournal | Desenvolvido para TI & Operações de Rede</p>
+      <div class="quick-links">
+        <a href="/api/download/changelog" target="_blank">📄 Histórico Completo (CHANGELOG.md)</a>
+        <a href="/api/download/sha256" target="_blank">🔑 Arquivo de Hashes (SHA256.txt)</a>
+        <a href="/api/check-updates" target="_blank">⚙️ Manifesto JSON (version.json)</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Carregar dados dinamicamente do manifesto version.json
+    fetch('/api/check-updates')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.version) {
+          document.getElementById('ver-tag').textContent = 'v' + data.version;
+          document.getElementById('rel-date').textContent = data.releaseDate || '';
+          if (data.installerFilename) document.getElementById('inst-filename').textContent = data.installerFilename;
+          if (data.installerSize) document.getElementById('inst-size').textContent = data.installerSize;
+          if (data.portableFilename) document.getElementById('port-filename').textContent = data.portableFilename;
+          if (data.portableSize) document.getElementById('port-size').textContent = data.portableSize;
+
+          if (Array.isArray(data.changelog) && data.changelog.length > 0) {
+            const list = document.getElementById('changelog-list');
+            list.innerHTML = '';
+            data.changelog.forEach(item => {
+              const li = document.createElement('li');
+              li.textContent = item;
+              list.appendChild(li);
+            });
+          }
+        }
+      })
+      .catch(err => console.error('Erro ao carregar manifesto:', err));
+
+    fetch('/api/download/sha256')
+      .then(res => res.text())
+      .then(text => {
+        if (text) {
+          document.getElementById('sha-box').textContent = text;
+        }
+      })
+      .catch(err => console.error('Erro ao carregar SHA256:', err));
+  </script>
+</body>
+</html>
