@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import { fileURLToPath } from 'url';
 import { RedNotebookStorage } from './storage.js';
 import { searchJournal, getAllTagsWithCounts, replaceInJournal } from './search.js';
 import { createJournalBackupZip, restoreJournalBackupZip } from './backup.js';
@@ -41,8 +42,6 @@ const upload = multer({ storage: uploadStorage });
 app.use('/data-assets', (req, res, next) => {
   express.static(storage.dataDir)(req, res, next);
 });
-
-import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
