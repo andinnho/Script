@@ -435,7 +435,9 @@ export function startServer(preferredPort = process.env.PORT || 3001) {
 export { app, storage };
 
 // Se executado diretamente via terminal (node server/index.js)
-if (import.meta.url === `file://${process.argv[1]}` || (process.argv[1] && process.argv[1].includes('server/index.js'))) {
+const _thisFile = fileURLToPath(import.meta.url).replace(/\\/g, '/');
+const _mainArg = process.argv[1] ? process.argv[1].replace(/\\/g, '/') : '';
+if (_mainArg && (_thisFile === _mainArg || _thisFile.endsWith(_mainArg) || _mainArg.endsWith('server/index.js'))) {
   startServer().catch((err) => {
     console.error('Falha crítica ao iniciar servidor:', err);
     process.exit(1);
