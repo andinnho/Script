@@ -8,12 +8,14 @@
     "server": "node server/index.js",
     "client": "vite client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "downloads": "concurrently \"npm run server\" \"wait-on http://localhost:3001 && start http://localhost:3001/downloads\"",
     "build": "vite build client --outDir ../dist --emptyOutDir",
     "preview": "vite preview client",
     "electron": "electron .",
     "electron:dev": "cross-env NODE_ENV=development concurrently \"npm run client\" \"wait-on http://localhost:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
     "electron:build": "npm run build && electron-builder --win",
     "dist": "npm run electron:build",
+    "publish": "node scripts/publish-release.js",
     "icons": "node scripts/generate-icons.js"
   },
   "keywords": [
