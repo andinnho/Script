@@ -334,20 +334,34 @@ app.get('*', (req, res, next) => {
   `);
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`OpenJournal Backend Server rodando na porta http://localhost:${PORT}`);
-  console.log(`Diretório de dados RedNotebook: ${storage.dataDir}`);
-});
+export function startServer(preferredPort = process.env.PORT || 3001) {
+  return new Promise((resolve, reject) => {
+    const port = parseInt(preferredPort, 10);
+    const server = app.listen(port, () => {
+      console.log(`OpenJournal Backend Server rodando em http://localhost:${port}`);
+      console.log(`Diretório de dados RedNotebook: ${storage.dataDir}`);
+      resolve({ server, port, storage, app });
+    });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`\n====================================================`);
-    console.error(`  [AVISO] A PORTA ${PORT} JÁ ESTÁ EM USO!`);
-    console.error(`  O OpenJournal já está aberto e rodando.`);
-    console.error(`  Acesse diretamente no navegador: http://localhost:${PORT}`);
-    console.error(`====================================================\n`);
-  } else {
-    console.error(`Erro ao iniciar servidor:`, err.message);
-  }
-  process.exit(1);
-});
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.warn(`[AVISO] A porta ${port} já está em uso.`);
+        resolve({ server: null, port, isPortInUse: true, error: err });
+      } else {
+        console.error(`Erro ao iniciar servidor:`, err.message);
+        reject(err);
+      }
+    });
+  });
+}
+
+export { app, storage };
+
+// Se executado diretamente via terminal (node server/index.js)
+if (import.meta.url === `file://${process.argv[1]}` || (process.argv[1] && process.argv[1].includes('server/index.js'))) {
+  startServer().catch((err) => {
+    console.error('Falha crítica ao iniciar servidor:', err);
+    process.exit(1);
+  });
+}
+

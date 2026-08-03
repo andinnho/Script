@@ -2,6 +2,7 @@
 node_modules/
 dist/
 client/dist/
+release/
 
 # Dados Pessoais e Configurações Locais
 data_config.json

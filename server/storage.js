@@ -5,15 +5,32 @@ import yaml from 'js-yaml';
 // RedNotebook standard data directory resolution
 export class RedNotebookStorage {
   constructor(customDataDir = null) {
-    this.configFilePath = path.join(process.cwd(), 'data_config.json');
     this.dataDir = customDataDir || this.loadSavedDataDir() || path.join(process.cwd(), 'data');
     this.ensureDataDirectory();
   }
 
+  getConfigFilePath() {
+    // No Windows instalado, priorizar %APPDATA%/OpenJournal/data_config.json para evitar erros em Program Files
+    const localPath = path.join(process.cwd(), 'data_config.json');
+    if (fs.existsSync(localPath)) {
+      return localPath;
+    }
+    const appData = process.env.APPDATA;
+    if (appData) {
+      const configDir = path.join(appData, 'OpenJournal');
+      if (!fs.existsSync(configDir)) {
+        try { fs.mkdirSync(configDir, { recursive: true }); } catch (e) {}
+      }
+      return path.join(configDir, 'data_config.json');
+    }
+    return localPath;
+  }
+
   loadSavedDataDir() {
     try {
-      if (fs.existsSync(this.configFilePath)) {
-        const raw = fs.readFileSync(this.configFilePath, 'utf-8');
+      const configPath = this.getConfigFilePath();
+      if (fs.existsSync(configPath)) {
+        const raw = fs.readFileSync(configPath, 'utf-8');
         const parsed = JSON.parse(raw);
         if (parsed && parsed.dataDir && typeof parsed.dataDir === 'string') {
           return parsed.dataDir;
@@ -27,7 +44,8 @@ export class RedNotebookStorage {
 
   saveConfigDataDir(newDir) {
     try {
-      fs.writeFileSync(this.configFilePath, JSON.stringify({ dataDir: newDir }, null, 2), 'utf-8');
+      const configPath = this.getConfigFilePath();
+      fs.writeFileSync(configPath, JSON.stringify({ dataDir: newDir }, null, 2), 'utf-8');
     } catch (err) {
       console.error('Erro ao salvar data_config.json:', err);
     }

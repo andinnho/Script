@@ -1,14 +1,19 @@
-# OpenJournal - Fork Moderno do RedNotebook
+# OpenJournal - Fork Moderno do RedNotebook (Desktop Electron)
 
 [![Compatibilidade RedNotebook](https://img.shields.io/badge/RedNotebook-100%25%20Compat%C3%ADvel-blue.svg)](https://github.com/jendrikseipp/rednotebook)
+[![Electron Desktop](https://img.shields.io/badge/Electron-Windows%20App-47848F.svg)](https://www.electronjs.org/)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](LICENSE)
 
-O **OpenJournal** é um fork moderno, responsivo e elegante do projeto open-source **RedNotebook**. Ele foi desenvolvido com o objetivo de entregar uma experiência de diário pessoal de última geração (inspirada nas interfaces modernas de assistentes de IA como ChatGPT, Claude e Gemini), mantendo **100% de compatibilidade com o formato de arquivos de histórico do RedNotebook**.
+O **OpenJournal (Script)** é um aplicativo desktop nativo e moderno para Windows, desenvolvido com **Electron**, **React** e **Node.js**. Ele entrega uma experiência de diário de bordo/passagem de turno pessoal de última geração (inspirada nas UIs do ChatGPT, Claude e Gemini), mantendo **100% de compatibilidade com o formato de arquivos de histórico do RedNotebook**.
 
 ---
 
 ## 🌟 Principais Recursos
 
+- 💻 **Aplicativo Desktop Nativo (Windows)**:
+  - Rodando diretamente em uma janela nativa via **Electron**, sem necessidade de scripts `.bat` ou navegadores abertos.
+  - Execução silenciosa sem janelas de terminal ou Prompt de Comando.
+  - Atalhos automáticos na Área de Trabalho e Menu Iniciar gerados pelo instalador.
 - 🔒 **Compatibilidade de Dados 100% Garantida**:
   - Armazenamento em arquivos `data/AAAA-MM.txt` em formato **YAML UTF-8**.
   - Estrutura de chaves por dia (`1` a `31`), marcas de texto (`**negrito**`, `//itálico//`, `== Títulos ==`, `#hashtags`, `[links]`, `[image: ...]`).
@@ -37,48 +42,47 @@ O **OpenJournal** é um fork moderno, responsivo e elegante do projeto open-sour
 ## 📁 Estrutura do Projeto
 
 ```
-Open_Journal/
-├── original_rednotebook_src/     # Código-fonte oficial baixado do RedNotebook (v2.42)
+Script/
+├── electron/                      # Processo principal e pré-carregamento do Electron
+│   ├── main.js                    # Inicializador da janela desktop e servidor embutido
+│   └── preload.js                 # Bridge seguro IPC
+├── build/                         # Ícones nativos executáveis (icon.ico e icon.png)
 ├── server/                        # Backend Node.js para manuseio estrito dos arquivos YAML RedNotebook
-│   ├── storage.js                 # Motor de armazenamento YAML atômico (idêntico ao storage.py)
+│   ├── storage.js                 # Motor de armazenamento YAML atômico
 │   ├── search.js                  # Motor de busca rápida e hashtags
 │   ├── backup.js                  # Gerador e leitor de ZIP de backup
 │   ├── onedrive.js                # Detecção e sincronizador de pastas OneDrive
-│   └── index.js                  # Servidor Express API na porta 3001
+│   └── index.js                  # Servidor Express API (Exportável/Standalone)
 ├── client/                        # Interface Web SPA em Vite + React
-│   ├── src/
-│   │   ├── components/            # Componentes (Calendar, Editor, Timeline, Sidebar, Search, AI, Backup)
-│   │   ├── styles/                # CSS com variáveis de tema Claro/Escuro
-│   │   ├── utils/                 # Parser de marcação RedNotebook
-│   │   └── App.jsx                # Componente principal
+│   ├── src/                       # Componentes React, Estilos e Parsers
 │   └── index.html                 # Shell HTML
-├── package.json                   # Scripts e dependências (npm run dev)
-└── vite.config.js                 # Configuração do Vite
+├── dist/                          # Build estático da interface web
+├── release/                       # Executável (.exe) e Instalador Windows gerados pelo Electron Builder
+├── package.json                   # Scripts de build e dependências do projeto
+└── electron-builder.json          # Configuração de empacotamento NSIS/Portable
 ```
 
 ---
 
-## 🚀 Como Executar o OpenJournal
+## 🚀 Como Executar e Compilar o OpenJournal
 
 ### Pré-requisitos
 - **Node.js** (versão 18+ instalada)
 - **npm** (incluso com o Node.js)
 
-### Passos para iniciar:
+### 1. Executar em Modo de Desenvolvimento (Electron Desktop):
+```bash
+npm run electron:dev
+```
+Isso iniciará o servidor Vite frontend e abrirá automaticamente o aplicativo na janela desktop nativa do Electron.
 
-1. **Instalar as dependências**:
-   No terminal, na pasta raiz do projeto, execute:
-   ```bash
-   npm install
-   ```
-
-2. **Iniciar o aplicativo em modo de desenvolvimento**:
-   ```bash
-   npm run dev
-   ```
-   Isso iniciará simultaneamente:
-   - Servidor Backend RedNotebook na porta `http://localhost:3001`
-   - Interface Frontend em Vite na porta `http://localhost:3000` (abrindo automaticamente no seu navegador).
+### 2. Gerar o Instalador Executável (.exe) para Windows:
+```bash
+npm run electron:build
+```
+Após a conclusão, os arquivos compilados estarão disponíveis na pasta `release/`:
+- `release/Script-Setup-1.0.0.exe` (Instalador NSIS com atalhos na Área de Trabalho e Menu Iniciar)
+- `release/Script-1.0.0.exe` (Versão Portátil)
 
 ---
 
@@ -86,7 +90,7 @@ Open_Journal/
 
 Para comprovar a compatibilidade total com o RedNotebook original:
 1. Crie qualquer anotação no OpenJournal e salve.
-2. Acesse a pasta `data/` do projeto e note os arquivos `AAAA-MM.txt`.
+2. Acesse a pasta `data/` do projeto (ou sua pasta customizada no OneDrive) e note os arquivos `AAAA-MM.txt`.
 3. Abra estes arquivos no RedNotebook desktop tradicional — eles serão carregados sem qualquer erro ou alteração na estrutura!
 
 ---
@@ -94,3 +98,4 @@ Para comprovar a compatibilidade total com o RedNotebook original:
 ## 📜 Licença
 
 Distribuído sob a licença **GPL v2 or later**, respeitando a licença do projeto original RedNotebook.
+
