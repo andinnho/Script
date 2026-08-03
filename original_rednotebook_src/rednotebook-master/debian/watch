@@ -1,6 +1,0 @@
-Version: 5
-Template: GitHub
-Owner: jendrikseipp
-Project: rednotebook
-Dversion-Mangle: s/\+ds\d*$//
-Repacksuffix: +ds
