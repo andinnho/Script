@@ -48,6 +48,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.resolve(__dirname, '../dist');
 
+// Servir Central de Downloads da Intranet para Analistas (Prioridade sobre SPA)
+app.get(['/downloads', '/downloads.html', '/central-downloads'], (req, res) => {
+  const downloadsPath = path.resolve(__dirname, 'distribution/downloads.html');
+  if (fs.existsSync(downloadsPath)) {
+    return res.sendFile(downloadsPath);
+  }
+  res.status(404).send('Página de downloads não encontrada.');
+});
+
 app.use(express.static(distPath));
 
 // API Routes
