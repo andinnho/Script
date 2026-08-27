@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { parseRedNotebookMarkup } from '../utils/rednotebookParser';
 import { API_BASE } from '../utils/apiConfig';
+import CategoryDashboard from './CategoryDashboard';
+import LinkModal from './LinkModal';
 
 const Editor = forwardRef(function Editor({
   text,
@@ -26,11 +28,44 @@ const Editor = forwardRef(function Editor({
   viewMode,
   onChangeViewMode,
   highlightQuery = '',
-  onClearHighlight = () => {}
+  onClearHighlight = () => {},
+  currentDate = new Date(),
+  customCategories
 }, ref) {
   const textareaRef = useRef(null);
   const previewRef = useRef(null);
   const [copied, setCopied] = useState(false);
+
+  // State for OneNote Style Link Modal
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const [linkInitialText, setLinkInitialText] = useState('');
+  const [linkInitialUrl, setLinkInitialUrl] = useState('');
+
+  const handleOpenLinkModal = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedVal = textarea.value.substring(start, end).trim();
+
+      if (/^(https?:\/\/|www\.)/i.test(selectedVal)) {
+        setLinkInitialUrl(selectedVal);
+        setLinkInitialText('');
+      } else {
+        setLinkInitialText(selectedVal);
+        setLinkInitialUrl('');
+      }
+    } else {
+      setLinkInitialText('');
+      setLinkInitialUrl('');
+    }
+    setIsLinkModalOpen(true);
+  };
+
+  const handleConfirmLink = ({ displayText, linkUrl }) => {
+    const formattedLink = `[${displayText} ${linkUrl}]`;
+    insertMarkup(formattedLink);
+  };
 
   useImperativeHandle(ref, () => ({
     insertCategory(categoryName) {
@@ -101,21 +136,29 @@ const Editor = forwardRef(function Editor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const currentScroll = textarea.scrollTop;
+    // Usa textarea.value (DOM) em vez do prop `text` (React) para evitar closure stale
+    const currentValue = textarea.value;
 
-    const needLeadingNewline = start > 0 && text[start - 1] !== '\n';
+    const needLeadingNewline = start > 0 && currentValue[start - 1] !== '\n';
     const prefix = needLeadingNewline ? '\n\n' : '';
     const fullInsertion = prefix + headerMarkup;
 
-    const newText = text.substring(0, start) + fullInsertion + text.substring(end);
+    const newText = currentValue.substring(0, start) + fullInsertion + currentValue.substring(end);
     onChangeText(newText);
+
+    // Atualiza o preview imediatamente, sem aguardar o ciclo de re-render do React
+    if (previewRef.current) {
+      previewRef.current.innerHTML = parseRedNotebookMarkup(newText, highlightQuery);
+    }
 
     const targetPos = start + fullInsertion.length;
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
+      textarea.value = newText;
       textarea.focus({ preventScroll: true });
       textarea.setSelectionRange(targetPos, targetPos);
       textarea.scrollTop = currentScroll;
-    }, 10);
+    });
   };
 
   const insertSeparatorLine = () => {
@@ -131,21 +174,29 @@ const Editor = forwardRef(function Editor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const currentScroll = textarea.scrollTop;
+    // Usa textarea.value (DOM) em vez do prop `text` (React) para evitar closure stale
+    const currentValue = textarea.value;
 
-    const needLeadingNewline = start > 0 && text[start - 1] !== '\n';
+    const needLeadingNewline = start > 0 && currentValue[start - 1] !== '\n';
     const prefix = needLeadingNewline ? '\n' : '';
     const fullInsertion = prefix + separator;
 
-    const newText = text.substring(0, start) + fullInsertion + text.substring(end);
+    const newText = currentValue.substring(0, start) + fullInsertion + currentValue.substring(end);
     onChangeText(newText);
+
+    // Atualiza o preview imediatamente, sem aguardar o ciclo de re-render do React
+    if (previewRef.current) {
+      previewRef.current.innerHTML = parseRedNotebookMarkup(newText, highlightQuery);
+    }
 
     const targetPos = start + fullInsertion.length;
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
+      textarea.value = newText;
       textarea.focus({ preventScroll: true });
       textarea.setSelectionRange(targetPos, targetPos);
       textarea.scrollTop = currentScroll;
-    }, 10);
+    });
   };
 
   // Auto-scroll and select search query in Textarea and Preview
@@ -198,19 +249,27 @@ const Editor = forwardRef(function Editor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const currentScroll = textarea.scrollTop;
-    const selectedText = text.substring(start, end) || 'texto';
-    const newText = text.substring(0, start) + prefix + selectedText + suffix + text.substring(end);
+    // Usa textarea.value (DOM) em vez do prop `text` (React) para evitar closure stale
+    const currentValue = textarea.value;
+    const selectedText = currentValue.substring(start, end) || 'texto';
+    const newText = currentValue.substring(0, start) + prefix + selectedText + suffix + currentValue.substring(end);
 
     onChangeText(newText);
 
-    setTimeout(() => {
+    // Atualiza o preview imediatamente, sem aguardar o ciclo de re-render do React
+    if (previewRef.current) {
+      previewRef.current.innerHTML = parseRedNotebookMarkup(newText, highlightQuery);
+    }
+
+    requestAnimationFrame(() => {
+      textarea.value = newText;
       textarea.focus({ preventScroll: true });
       textarea.setSelectionRange(
         start + prefix.length,
         start + prefix.length + selectedText.length
       );
       textarea.scrollTop = currentScroll;
-    }, 10);
+    });
   };
 
   const handleFileUpload = async (e) => {
@@ -304,7 +363,7 @@ const Editor = forwardRef(function Editor({
         <button className="tool-btn" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkup('- ')} title="Lista de Tópicos (- item)">
           <List size={15} />
         </button>
-        <button className="tool-btn" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkup('[Link ', ' http://exemplo.com]')} title="Inserir Link">
+        <button className="tool-btn" onMouseDown={(e) => e.preventDefault()} onClick={handleOpenLinkModal} title="Inserir Link (Estilo OneNote)">
           <LinkIcon size={15} />
         </button>
 
@@ -346,6 +405,15 @@ const Editor = forwardRef(function Editor({
         </div>
       </div>
 
+      {/* Category Dashboard Panel */}
+      <CategoryDashboard
+        text={text}
+        onNavigateToCategory={(catName, occIdx) => scrollToCategoryOccurrence(catName, occIdx)}
+        onInsertCategory={(catName) => insertCategoryHeader(catName)}
+        currentDate={currentDate}
+        customCategories={customCategories}
+      />
+
       {/* Editor Content Area */}
       <div className="editor-split-view">
         {(viewMode === 'edit' || viewMode === 'split') && (
@@ -366,6 +434,15 @@ const Editor = forwardRef(function Editor({
           />
         )}
       </div>
+
+      {/* OneNote Style Interactive Link Modal */}
+      <LinkModal
+        isOpen={isLinkModalOpen}
+        onClose={() => setIsLinkModalOpen(false)}
+        onConfirm={handleConfirmLink}
+        initialText={linkInitialText}
+        initialUrl={linkInitialUrl}
+      />
     </div>
   );
 });

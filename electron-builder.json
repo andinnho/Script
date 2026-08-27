@@ -2,6 +2,8 @@
   "appId": "com.script.openjournal",
   "productName": "Script",
   "copyright": "Copyright © 2026 OpenJournal",
+  "asar": true,
+  "compression": "normal",
   "directories": {
     "output": "release",
     "buildResources": "build"
@@ -10,8 +12,7 @@
     "dist/**/*",
     "server/**/*",
     "electron/**/*",
-    "package.json",
-    "node_modules/**/*"
+    "package.json"
   ],
   "extraMetadata": {
     "main": "electron/main.js"
@@ -42,6 +43,7 @@
     "uninstallDisplayName": "Script - OpenJournal",
     "installerIcon": "build/icon.ico",
     "uninstallerIcon": "build/icon.ico",
-    "installerHeaderIcon": "build/icon.ico"
+    "installerHeaderIcon": "build/icon.ico",
+    "differentialPackage": false
   }
 }

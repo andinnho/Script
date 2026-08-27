@@ -1,0 +1,57 @@
+{
+  "feriados_nacionais": [
+    { "data": "01-01", "nome": "Confraternização Universal (Ano Novo)", "tipo": "nacional" },
+    { "data": "04-21", "nome": "Tiradentes", "tipo": "nacional" },
+    { "data": "05-01", "nome": "Dia Mundial do Trabalho", "tipo": "nacional" },
+    { "data": "09-07", "nome": "Independência do Brasil", "tipo": "nacional" },
+    { "data": "10-12", "nome": "Nossa Senhora Aparecida (Padroeira do Brasil)", "tipo": "nacional" },
+    { "data": "11-02", "nome": "Finados", "tipo": "nacional" },
+    { "data": "11-15", "nome": "Proclamação da República", "tipo": "nacional" },
+    { "data": "11-20", "nome": "Dia Nacional de Zumbi e da Consciência Negra", "tipo": "nacional" },
+    { "data": "12-25", "nome": "Natal", "tipo": "nacional" }
+  ],
+  "feriados_municipais": [
+    {
+      "data": "08-31",
+      "nome": "Aniversário da Cidade",
+      "municipio": "Uberlândia - MG",
+      "tipo": "municipal",
+      "facultativo": false
+    },
+    {
+      "data": "01-25",
+      "nome": "Aniversário de São Paulo",
+      "municipio": "São Paulo - SP",
+      "tipo": "municipal",
+      "facultativo": false
+    },
+    {
+      "data": "01-20",
+      "nome": "Dia de São Sebastião (Padroeiro)",
+      "municipio": "Rio de Janeiro - RJ",
+      "tipo": "municipal",
+      "facultativo": false
+    },
+    {
+      "data": "10-28",
+      "nome": "Dia do Servidor Público",
+      "municipio": "Nacional / Municipal",
+      "tipo": "ponto_facultativo",
+      "facultativo": true
+    },
+    {
+      "data": "12-31",
+      "nome": "Véspera de Ano Novo",
+      "municipio": "Nacional / Municipal",
+      "tipo": "ponto_facultativo",
+      "facultativo": true
+    },
+    {
+      "data": "12-24",
+      "nome": "Véspera de Natal",
+      "municipio": "Nacional / Municipal",
+      "tipo": "ponto_facultativo",
+      "facultativo": true
+    }
+  ]
+}

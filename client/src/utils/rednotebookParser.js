@@ -107,9 +107,9 @@ export function parseRedNotebookMarkup(text, highlightQuery = '') {
     .replace(/>/g, '&gt;');
 
   // 5. Headings
-  html = html.replace(/^====\s*(.*?)\s*====$/gm, '<h3>$1</h3>');
-  html = html.replace(/^===\s*(.*?)\s*===$/gm, '<h2>$1</h2>');
-  html = html.replace(/^==\s*(.*?)\s*==$/gm, '<h1>$1</h1>');
+  html = html.replace(/^====\s*(.*?)\s*====[ \t]*$/gm, '<h3>$1</h3>');
+  html = html.replace(/^===\s*(.*?)\s*===[ \t]*$/gm, '<h2>$1</h2>');
+  html = html.replace(/^==\s*(.*?)\s*==[ \t]*$/gm, '<h1>$1</h1>');
 
   // 6. Formatting: Bold, Italic, Underline, Strikethrough
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');

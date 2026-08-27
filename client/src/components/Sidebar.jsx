@@ -441,69 +441,8 @@ export default function Sidebar({
                   </div>
                 )}
 
-                {/* Opções de Seleção Rápida */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                    Opções de Armazenamento:
-                  </span>
-
-                  {/* Botões do OneDrive */}
-                  {storageConfig?.oneDriveFolders?.map((odPath, idx) => (
-                    <button
-                      key={`od-${idx}`}
-                      type="button"
-                      className="tool-btn"
-                      onClick={() => {
-                        setCustomPathInput(odPath);
-                        handleSaveStorageDirectory(odPath);
-                      }}
-                      style={{
-                        justifyContent: 'flex-start',
-                        fontSize: '11px',
-                        padding: '6px 8px',
-                        border: storageConfig.activeDataDir === odPath ? '1px solid #10b981' : '1px solid var(--border-color)',
-                        backgroundColor: storageConfig.activeDataDir === odPath ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
-                        textAlign: 'left'
-                      }}
-                    >
-                      <Cloud size={13} color="#38bdf8" />
-                      <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        Salvar no OneDrive ({typeof odPath === 'string' ? (odPath.split('\\').pop() || odPath.split('/').pop()) : 'OneDrive'})
-                      </span>
-                    </button>
-                  ))}
-
-                  {/* Botões da Unidade C: */}
-                  {storageConfig?.cDriveFolders?.map((cPath, idx) => (
-                    <button
-                      key={`c-${idx}`}
-                      type="button"
-                      className="tool-btn"
-                      onClick={() => {
-                        setCustomPathInput(cPath);
-                        handleSaveStorageDirectory(cPath);
-                      }}
-                      style={{
-                        justifyContent: 'flex-start',
-                        fontSize: '11px',
-                        padding: '6px 8px',
-                        border: storageConfig.activeDataDir === cPath ? '1px solid #10b981' : '1px solid var(--border-color)',
-                        backgroundColor: storageConfig.activeDataDir === cPath ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
-                        textAlign: 'left'
-                      }}
-                    >
-                      <HardDrive size={13} color="#a855f7" />
-                      <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {cPath === storageConfig.defaultDataDir ? 'Pasta Padrão do Projeto (./data)' : `Unidade C: (${cPath})`}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
                 {/* Botão de Navegação Visual e Campo Personalizado */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Procurar ou Digitar Pasta:</span>
-                  
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <button
                     type="button"
                     className="tool-btn"
@@ -523,12 +462,12 @@ export default function Sidebar({
                     <span>📁 Navegar e Escolher Pasta no PC...</span>
                   </button>
 
-                  <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
+                  <div style={{ display: 'flex', gap: '6px' }}>
                     <input
                       type="text"
                       value={customPathInput}
                       onChange={(e) => setCustomPathInput(e.target.value)}
-                      placeholder="Ex: C:\MeusDiarios ou OneDrive\MinhasNotas"
+                      placeholder="Ex: C:\MeusDiarios"
                       style={{
                         flex: 1,
                         fontSize: '11px',
@@ -559,7 +498,7 @@ export default function Sidebar({
                 </div>
 
                 {/* Checkbox de Cópia */}
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-secondary)', cursor: 'pointer', marginTop: '2px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={copyExistingHistory}

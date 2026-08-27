@@ -1,48 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Menu, Settings } from 'lucide-react';
 import { 
-  Menu, 
-  AlertTriangle, 
-  RotateCcw, 
-  Network, 
-  Headphones, 
-  Smartphone, 
-  Activity, 
-  TrendingUp, 
-  Server, 
-  Radio, 
-  Clipboard, 
-  FileText, 
-  Database, 
-  Clock, 
-  Hourglass, 
-  Tag, 
-  Phone, 
-  Signal 
-} from 'lucide-react';
+  DEFAULT_CATEGORIES, 
+  getStoredCategories, 
+  getCategoryIconComponent 
+} from '../utils/categoryStore';
 
-export const CATEGORY_ITEMS = [
-  { name: 'Afeta Clientes', icon: AlertTriangle, key: 'a', shortcut: 'Ctrl+A' },
-  { name: 'BA Reverso', icon: RotateCcw, key: 'b', shortcut: 'Ctrl+B' },
-  { name: 'BGP', icon: Network, key: 'g', shortcut: 'Ctrl+G' },
-  { name: 'CX_COR_FIXA_N2', icon: Headphones, key: 'k', shortcut: 'Ctrl+K' },
-  { name: 'CX_COR_MOVEL_N2', icon: Smartphone, key: 'm', shortcut: 'Ctrl+M' },
-  { name: 'Em Monitoramento', icon: Activity, key: 'e', shortcut: 'Ctrl+E' },
-  { name: 'Escalonamento', icon: TrendingUp, key: 'l', shortcut: 'Ctrl+L' },
-  { name: 'IP', icon: Server, key: 'i', shortcut: 'Ctrl+I' },
-  { name: 'ISUP', icon: Radio, key: 'u', shortcut: 'Ctrl+U' },
-  { name: 'Observações', icon: Clipboard, key: 'o', shortcut: 'Ctrl+O' },
-  { name: 'OD', icon: FileText, key: 'd', shortcut: 'Ctrl+D' },
-  { name: 'OG', icon: Database, key: 'h', shortcut: 'Ctrl+H' },
-  { name: 'Pendência IP', icon: Clock, key: 'p', shortcut: 'Ctrl+P' },
-  { name: 'Pendencia TX', icon: Hourglass, key: 'y', shortcut: 'Ctrl+Y' },
-  { name: 'RDM', icon: Tag, key: 'r', shortcut: 'Ctrl+R' },
-  { name: 'SIP', icon: Phone, key: 's', shortcut: 'Ctrl+S' },
-  { name: 'TX', icon: Signal, key: 't', shortcut: 'Ctrl+T' }
-];
+export const CATEGORY_ITEMS = DEFAULT_CATEGORIES.map(c => ({
+  name: c.name,
+  icon: getCategoryIconComponent(c.iconName),
+  key: c.key,
+  shortcut: c.shortcut
+}));
 
-export default function CategoryMenu({ onSelectCategory }) {
+export default function CategoryMenu({
+  onSelectCategory,
+  onOpenManagerModal,
+  customCategories
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const categories = customCategories || getStoredCategories();
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -58,6 +37,13 @@ export default function CategoryMenu({ onSelectCategory }) {
   const handleSelect = (categoryName) => {
     onSelectCategory(categoryName);
     setIsOpen(false);
+  };
+
+  const handleOpenManager = () => {
+    setIsOpen(false);
+    if (onOpenManagerModal) {
+      onOpenManagerModal();
+    }
   };
 
   return (
@@ -79,9 +65,10 @@ export default function CategoryMenu({ onSelectCategory }) {
             position: 'absolute',
             top: 'calc(100% + 6px)',
             left: 0,
-            width: '260px',
-            maxHeight: '420px',
-            overflowY: 'auto',
+            width: '270px',
+            maxHeight: '440px',
+            display: 'flex',
+            flexDirection: 'column',
             backgroundColor: 'var(--bg-card)',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-md)',
@@ -90,6 +77,7 @@ export default function CategoryMenu({ onSelectCategory }) {
             padding: '6px'
           }}
         >
+          {/* Header */}
           <div style={{
             fontSize: '11px',
             fontWeight: 700,
@@ -107,50 +95,87 @@ export default function CategoryMenu({ onSelectCategory }) {
             <span>Atalho</span>
           </div>
 
-          {CATEGORY_ITEMS.map((item) => {
-            const IconComponent = item.icon;
-            return (
-              <button
-                key={item.name}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleSelect(item.name)}
-                className="category-menu-item"
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '8px 10px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: 'var(--text-primary)',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  transition: 'background-color 0.15s ease'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <IconComponent size={15} color="var(--accent-primary)" />
-                  <span>{item.name}</span>
-                </div>
-                <span className="category-shortcut-badge" style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'var(--text-muted)',
-                  backgroundColor: 'var(--bg-input)',
-                  border: '1px solid var(--border-color)',
-                  padding: '2px 6px',
-                  borderRadius: '4px'
-                }}>
-                  {item.shortcut}
-                </span>
-              </button>
-            );
-          })}
+          {/* List Body */}
+          <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            {categories.map((item) => {
+              const IconComponent = getCategoryIconComponent(item.iconName);
+              return (
+                <button
+                  key={item.id || item.name}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleSelect(item.name)}
+                  className="category-menu-item"
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '8px 10px',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: 'var(--text-primary)',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    borderRadius: 'var(--radius-sm)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    transition: 'background-color 0.15s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <IconComponent size={15} color="var(--accent-primary)" />
+                    <span>{item.name}</span>
+                  </div>
+                  {item.shortcut ? (
+                    <span className="category-shortcut-badge" style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '10px',
+                      fontWeight: 600,
+                      color: 'var(--text-muted)',
+                      backgroundColor: 'var(--bg-input)',
+                      border: '1px solid var(--border-color)',
+                      padding: '2px 6px',
+                      borderRadius: '4px'
+                    }}>
+                      {item.shortcut}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Fixed Footer Action: Gerenciar Categorias */}
+          <div style={{
+            borderTop: '1px solid var(--border-color)',
+            paddingTop: '6px',
+            marginTop: '4px'
+          }}>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={handleOpenManager}
+              style={{
+                width: '100%',
+                padding: '8px 10px',
+                fontSize: '12px',
+                fontWeight: 700,
+                color: 'var(--accent-primary)',
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                border: '1px dashed var(--accent-primary)',
+                borderRadius: 'var(--radius-sm)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <Settings size={14} />
+              <span>⚙️ Gerenciar Categorias...</span>
+            </button>
+          </div>
         </div>
       )}
     </div>
