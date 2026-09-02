@@ -389,7 +389,7 @@ app.get('*', (req, res, next) => {
     <html lang="pt-BR">
     <head>
       <meta charset="UTF-8">
-      <title>OpenJournal - Build Necessário</title>
+      <title>Script - Build Necessário</title>
       <style>
         body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
         .card { background: #1e293b; padding: 2.5rem; border-radius: 12px; max-width: 500px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
@@ -400,11 +400,11 @@ app.get('*', (req, res, next) => {
     </head>
     <body>
       <div class="card">
-        <h1>OpenJournal - Interface não encontrada</h1>
+        <h1>Script - Interface não encontrada</h1>
         <p>A pasta <strong>dist</strong> não foi encontrada. O frontend precisa ser gerado antes de iniciar a versão portable.</p>
         <p>Execute no terminal:</p>
         <p><code>npm run build</code></p>
-        <p>Ou execute <code>Iniciar_OpenJournal.bat</code> atualizado para compilar automaticamente.</p>
+        <p>Ou execute <code>Iniciar_Servidor.bat</code> atualizado para compilar automaticamente.</p>
       </div>
     </body>
     </html>
@@ -415,7 +415,7 @@ export function startServer(preferredPort = process.env.PORT || 3001) {
   return new Promise((resolve, reject) => {
     const port = parseInt(preferredPort, 10);
     const server = app.listen(port, () => {
-      console.log(`OpenJournal Backend Server rodando em http://localhost:${port}`);
+      console.log(`Script Backend Server rodando em http://localhost:${port}`);
       console.log(`Diretório de dados RedNotebook: ${storage.dataDir}`);
       resolve({ server, port, storage, app });
     });

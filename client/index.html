@@ -3,11 +3,164 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Script - Passagem de Turno e Incidentes</title>
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="description" content="Aplicação Script para acompanhamento de passagens de turno e incidentes." />
+    <title>Script</title>
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <meta name="description" content="Script - Sistema de Passagem de Turno." />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: #090d16;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      #initial-web-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: #090d16;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 40px;
+        box-sizing: border-box;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+        pointer-events: all;
+      }
+      #initial-web-splash.splash-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #initial-web-splash .bg-image {
+        position: absolute;
+        inset: 0;
+        background-image: url('/splash-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.65) contrast(1.1);
+        z-index: 1;
+      }
+      #initial-web-splash .overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(15, 23, 42, 0.4) 0%, rgba(9, 13, 22, 0.92) 85%);
+        z-index: 2;
+      }
+      #initial-web-splash .content {
+        position: relative;
+        z-index: 3;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      #initial-web-splash .brand-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      #initial-web-splash .brand-logo {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      #initial-web-splash .brand-text h1 {
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      #initial-web-splash .brand-text p {
+        font-size: 12px;
+        color: #94a3b8;
+        margin: 4px 0 0 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      #initial-web-splash .hero-box {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 24px;
+        max-width: 520px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      #initial-web-splash .hero-box h2 {
+        font-size: 16px;
+        color: #e2e8f0;
+        margin: 0 0 8px 0;
+      }
+      #initial-web-splash .hero-box p {
+        font-size: 13px;
+        color: #94a3b8;
+        margin: 0;
+        line-height: 1.5;
+      }
+      #initial-web-splash .footer {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-width: 520px;
+      }
+      #initial-web-splash .status-row {
+        display: flex;
+        justify-content: space-between;
+        color: #cbd5e1;
+        font-size: 13px;
+      }
+      #initial-web-splash .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      #initial-web-splash .progress-bar-fill {
+        height: 100%;
+        width: 65%;
+        background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #818cf8 100%);
+        border-radius: 10px;
+        animation: fillAnim 2.5s ease-in-out infinite alternate;
+      }
+      @keyframes fillAnim {
+        0% { width: 20%; }
+        50% { width: 75%; }
+        100% { width: 95%; }
+      }
+    </style>
   </head>
   <body>
+    <!-- Splash Screen fora do #root para o React não sobrescrever -->
+    <div id="initial-web-splash">
+      <div class="bg-image"></div>
+      <div class="overlay"></div>
+      <div class="content">
+        <div class="brand-header"></div>
+        <div class="hero-box">
+          <h2>✨ Preparando o seu Workspace</h2>
+          <p>Carregando histórico do diário, categorias e sincronizando o ambiente de passagem de turno...</p>
+        </div>
+        <div class="footer">
+          <div class="status-row">
+            <span>Iniciando sistema...</span>
+            <span>v1.0.0</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

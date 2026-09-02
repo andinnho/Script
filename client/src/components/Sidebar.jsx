@@ -222,7 +222,6 @@ export default function Sidebar({
               filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))'
             }} 
           />
-          <span className="logo-title">Script</span>
         </div>
 
         <div className="sidebar-actions">

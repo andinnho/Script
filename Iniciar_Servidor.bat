@@ -1,11 +1,11 @@
 @echo off
 chcp 65001 > nul
-title Script - OpenJournal | Servidor Corporativo
+title Script | Servidor & Aplicativo Desktop
 
 echo.
 echo  ╔══════════════════════════════════════════════════════╗
-echo  ║        Script - OpenJournal v1.0.0                   ║
-echo  ║        Servidor Corporativo - Intranet               ║
+echo  ║        Script v1.0.0                               ║
+echo  ║        Inicializador do Aplicativo Desktop         ║
 echo  ╚══════════════════════════════════════════════════════╝
 echo.
 
@@ -15,7 +15,7 @@ if errorlevel 1 (
     echo  [ERRO] Node.js não encontrado!
     echo.
     echo  Por favor, instale o Node.js antes de continuar:
-    echo  https://nodejs.org/  ^(versão LTS recomendada^)
+    echo  https://nodejs.org/  (versão LTS recomendada)
     echo.
     pause
     exit /b 1
@@ -28,7 +28,7 @@ echo.
 :: Instalar dependências se necessário
 if not exist "node_modules\" (
     echo  [INFO] Instalando dependências pela primeira vez...
-    echo  ^(Isso pode levar alguns minutos^)
+    echo  (Isso pode levar alguns minutos)
     echo.
     npm install --omit=dev
     if errorlevel 1 (
@@ -41,20 +41,14 @@ if not exist "node_modules\" (
     echo.
 )
 
-:: Abrir o navegador na Central de Downloads após 2 segundos
-echo  [INFO] Abrindo Central de Downloads no navegador...
-start /B cmd /C "timeout /t 2 > nul && start http://localhost:3001/downloads"
-
-:: Iniciar o servidor
+:: Iniciar o aplicativo desktop nativo com a Splash Screen
+echo  [INFO] Iniciando aplicativo Desktop com Splash Screen...
 echo  ════════════════════════════════════════════════════════
 echo   Servidor rodando em: http://localhost:3001
-echo   Central de Downloads: http://localhost:3001/downloads
-echo   Aplicativo: http://localhost:3001
+echo   Aplicativo Desktop: Iniciando Electron nativo...
 echo  ════════════════════════════════════════════════════════
 echo.
-echo   Para encerrar o servidor, feche esta janela ou pressione Ctrl+C
-echo.
 
-node server/index.js
+npx electron .
 
 pause

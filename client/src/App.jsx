@@ -87,8 +87,27 @@ export default function App() {
 
   // Load Month Data on Date Change
   useEffect(() => {
-    fetchMonthData(currentDate.getFullYear(), currentDate.getMonth() + 1);
-    fetchTags();
+    const initData = async () => {
+      await Promise.all([
+        fetchMonthData(currentDate.getFullYear(), currentDate.getMonth() + 1),
+        fetchTags()
+      ]);
+
+      // Notificar Electron que o app está pronto (fecha a Splash Window nativa)
+      if (window.electronAPI && typeof window.electronAPI.sendAppReady === 'function') {
+        window.electronAPI.sendAppReady();
+      }
+
+      // Remover a Splash Screen HTML com fade-out suave
+      const splash = document.getElementById('initial-web-splash');
+      if (splash) {
+        splash.classList.add('splash-hidden');
+        setTimeout(() => {
+          if (splash.parentNode) splash.parentNode.removeChild(splash);
+        }, 550);
+      }
+    };
+    initData();
   }, [currentDate.getFullYear(), currentDate.getMonth()]);
 
   // Update current text when date or monthData changes
